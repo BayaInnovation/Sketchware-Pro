@@ -130,11 +130,25 @@ public class ChatActivity extends AppCompatActivity {
         String scId = null;
         if (getIntent().hasExtra("sc_id")) {
             scId = getIntent().getStringExtra("sc_id");
-            updateContextWithProject(scId, false); 
+            
+            // Check for file content context from Code Editor
+            String fileContext = "";
+            if (getIntent().hasExtra("current_file_content")) {
+                String fileName = getIntent().getStringExtra("current_file_name");
+                String fileContent = getIntent().getStringExtra("current_file_content");
+                if (fileName == null) fileName = "CurrentFile.java";
+                
+                fileContext = "\n\nUser is currently viewing file '" + fileName + "'. Content:\n```\n" + fileContent + "\n```\n";
+                initialMessage = "I see you're working on " + fileName + ". How can I help?";
+            }
+            
+            updateContextWithProject(scId, false, fileContext); 
             java.util.HashMap<String, Object> metadata = a.a.a.lC.b(scId);
             if (metadata != null) {
                  String projectName = a.a.a.yB.c(metadata, "my_ws_name");
-                 initialMessage = "Hello! Working on '" + projectName + "'. How can I help?";
+                 if (fileContext.isEmpty()) {
+                    initialMessage = "Hello! Working on '" + projectName + "'. How can I help?";
+                 }
             }
         }
         
@@ -323,7 +337,7 @@ public class ChatActivity extends AppCompatActivity {
             holder.itemView.setOnClickListener(v -> loadSession(session.id));
             
             holder.itemView.setOnLongClickListener(v -> {
-                new androidx.appcompat.app.AlertDialog.Builder(ChatActivity.this)
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(ChatActivity.this)
                     .setTitle("Delete Chat")
                     .setMessage("Are you sure you want to delete this conversation?")
                     .setPositiveButton("Delete", (dialog, which) -> deleteSession(position))
@@ -378,7 +392,7 @@ public class ChatActivity extends AppCompatActivity {
                 inputField.setSelection(newText.length());
             }
             
-            updateContextWithProject(scId, true);
+            updateContextWithProject(scId, true, "");
             projectPopupWindow.dismiss();
         });
 
@@ -402,12 +416,16 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void updateContextWithProject(String sc_id, boolean notifyUser) {
+        updateContextWithProject(sc_id, notifyUser, "");
+    }
+
+    private void updateContextWithProject(String sc_id, boolean notifyUser, String additionalContext) {
         java.util.HashMap<String, Object> metadata = a.a.a.lC.b(sc_id);
         if (metadata != null) {
             String projectName = a.a.a.yB.c(metadata, "my_ws_name");
             String packageName = a.a.a.yB.c(metadata, "my_sc_pkg_name");
             
-            String context = "Current Project Context: Name=" + projectName + ", Package=" + packageName + ", SC_ID=" + sc_id + ".";
+            String context = "Current Project Context: Name=" + projectName + ", Package=" + packageName + ", SC_ID=" + sc_id + "." + additionalContext;
             aiService.setSystemContext(context);
             adapter.setProjectContext(sc_id);
             
@@ -712,15 +730,17 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void showSettingsDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        com.google.android.material.dialog.MaterialAlertDialogBuilder builder = new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
         builder.setTitle("AI Settings");
 
         android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
         layout.setOrientation(android.widget.LinearLayout.VERTICAL);
-        layout.setPadding(50, 40, 50, 10);
+        // Use standard padding
+        int padding = (int) (24 * getResources().getDisplayMetrics().density);
+        layout.setPadding(padding, padding / 2, padding, padding / 2);
 
         final android.widget.EditText input = new android.widget.EditText(this);
-        input.setHint("Enter API Key (Optional)");
+        input.setHint("Enter API Key");
         
         android.content.SharedPreferences prefs = getSharedPreferences("ai_settings", MODE_PRIVATE);
         String currentKey = prefs.getString("api_key", "");
@@ -729,7 +749,7 @@ public class ChatActivity extends AppCompatActivity {
         layout.addView(input);
         
         android.widget.TextView note = new android.widget.TextView(this);
-        note.setText("Leave empty to use default key.");
+        note.setText("You must provide your own generic OAuth compatible API Key.");
         note.setTextSize(12);
         note.setPadding(0, 10, 0, 0);
         layout.addView(note);

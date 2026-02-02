@@ -45,7 +45,7 @@ public abstract class BlockGeneratorDialog extends Dialog {
         TextView title = new TextView(getContext());
         title.setText("AI Block Generator");
         title.setTextSize(20);
-        title.setTextColor(android.graphics.Color.BLACK);
+        title.setTextColor(getContext().getResources().getColor(pro.sketchware.R.color.color_text_onSurface));
         layout.addView(title);
 
         input = new EditText(getContext());

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pro.sketchware.R;
+import pro.sketchware.utility.ThemeUtils;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_USER = 0;
@@ -162,12 +163,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 .usePlugin(new io.noties.markwon.AbstractMarkwonPlugin() {
                     @Override
                     public void configureTheme(@NonNull io.noties.markwon.core.MarkwonTheme.Builder builder) {
-                        builder.codeBackgroundColor(0xFFF0F2F5); // Lighter gray
-                        builder.codeBlockBackgroundColor(0xFFF8F9FA); // Very light gray block
-                        builder.codeBlockTextColor(0xFF202124); // Dark text
-                        builder.codeTextColor(0xFFD63384); // Pinkish red for inline code
-                        builder.blockQuoteColor(0xFFDDDDDD);
-                        builder.linkColor(0xFF006C7C); // Teal link color
+                        android.content.Context context = itemView.getContext();
+                        builder.codeBackgroundColor(ThemeUtils.getColor(context, com.google.android.material.R.attr.colorSurfaceContainerHigh));
+                        builder.codeBlockBackgroundColor(ThemeUtils.getColor(context, com.google.android.material.R.attr.colorSurfaceContainer));
+                        builder.codeBlockTextColor(ThemeUtils.getColor(context, com.google.android.material.R.attr.colorOnSurface));
+                        builder.codeTextColor(ThemeUtils.getColor(context, com.google.android.material.R.attr.colorTertiary));
+                        builder.blockQuoteColor(ThemeUtils.getColor(context, com.google.android.material.R.attr.colorSurfaceContainerLow));
+                        builder.linkColor(ThemeUtils.getColor(context, R.attr.colorPrimary));
                     }
                 })
                 .build();
