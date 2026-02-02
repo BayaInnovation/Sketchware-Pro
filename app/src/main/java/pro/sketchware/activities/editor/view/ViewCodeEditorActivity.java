@@ -32,6 +32,12 @@ import pro.sketchware.tools.ViewBeanParser;
 import pro.sketchware.utility.EditorUtils;
 import pro.sketchware.utility.SketchwareUtil;
 import pro.sketchware.utility.relativelayout.CircularDependencyDetector;
+import pro.sketchware.ai.QwenService;
+import android.widget.EditText;
+import android.text.InputType;
+import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.app.ProgressDialog;
 
 public class ViewCodeEditorActivity extends BaseAppCompatActivity {
     private ViewCodeEditorBinding binding;
@@ -148,6 +154,7 @@ public class ViewCodeEditorActivity extends BaseAppCompatActivity {
         }
         menu.add(Menu.NONE, 4, Menu.NONE, "Reload color schemes");
         menu.add(Menu.NONE, 5, Menu.NONE, "Layout Preview");
+        menu.add(Menu.NONE, 6, Menu.NONE, "AI Generate XML");
         return true;
     }
 
@@ -176,6 +183,10 @@ public class ViewCodeEditorActivity extends BaseAppCompatActivity {
             }
             case 5 -> {
                 toLayoutPreview();
+                return true;
+            }
+            case 6 -> {
+                showAiXmlGenerationDialog();
                 return true;
             }
             default -> {
@@ -271,5 +282,60 @@ public class ViewCodeEditorActivity extends BaseAppCompatActivity {
         } catch (Exception e) {
             SketchwareUtil.toastError(e.toString());
         }
+    }
+
+    private void showAiXmlGenerationDialog() {
+        final EditText input = new EditText(this);
+        input.setHint("Describe the layout you want (e.g., 'Login screen with email and password')");
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        input.setMinLines(3);
+        
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int margin = (int) (16 * getResources().getDisplayMetrics().density);
+        params.setMargins(margin, margin, margin, 0);
+        container.addView(input, params);
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("AI Generate XML")
+                .setView(container)
+                .setPositiveButton("Generate", (dialog, which) -> {
+                    String prompt = input.getText().toString().trim();
+                    if (prompt.isEmpty()) return;
+
+                    ProgressDialog progress = new ProgressDialog(this);
+                    progress.setMessage("Generating XML...");
+                    progress.setCancelable(false);
+                    progress.show();
+
+                    new QwenService(this).generateXml(prompt, 
+                        result -> {
+                            progress.dismiss();
+                            // Insert at cursor or append
+                            if (result != null && !result.isEmpty()) {
+                                try {
+                                    editor.insertText(result, 1);
+                                } catch (Exception e) {
+                                    // Fallback if insertion fails or no cursor, just append/set
+                                    if (editor.getText().toString().isEmpty()) {
+                                        editor.setText(result);
+                                    } else {
+                                        editor.setText(editor.getText().toString() + "\n" + result);
+                                    }
+                                }
+                                SketchwareUtil.toast("Generated successfully!");
+                            } else {
+                                SketchwareUtil.toastError("Generated content was empty");
+                            }
+                        },
+                        error -> {
+                            progress.dismiss();
+                            SketchwareUtil.toastError("Error: " + error.getMessage());
+                        }
+                    );
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 }

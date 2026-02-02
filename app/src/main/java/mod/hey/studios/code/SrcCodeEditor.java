@@ -462,6 +462,9 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
                         });
                         break;
 
+
+
+
                     case "Find & Replace":
                         binding.editor.getSearcher().stopSearch();
                         binding.editor.beginSearchMode();
@@ -569,4 +572,6 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
         intent.putExtra("xml", binding.editor.getText().toString());
         startActivity(intent);
     }
+
+
 }

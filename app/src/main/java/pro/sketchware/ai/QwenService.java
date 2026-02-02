@@ -243,6 +243,17 @@ public class QwenService implements AIService {
         processRequest(prompt, systemPrompt, onSuccess, onError);
     }
 
+    public void generateXml(String prompt, Consumer<String> onSuccess, Consumer<Throwable> onError) {
+        String systemPrompt = "You are an expert Android XML Layout developer. " +
+                "Generate valid Android XML layout code based on the user's description. " +
+                "Requirements:\n" +
+                "- Return ONLY the XML code. No markdown formatting like ```xml ... ```\n" +
+                "- Ensure standard Android namespaces are used (android, app, tools).\n" +
+                "- Use standard views (LinearLayout, RelativeLayout, TextView, Button, etc.) or Material Components.\n" +
+                "- Do not include explanations, only the code.";
+        processRequest(prompt, systemPrompt, onSuccess, onError);
+    }
+
     private void processRequest(String userPrompt, String systemPrompt, Consumer<String> onSuccess, Consumer<Throwable> onError) {
         JsonObject json = new JsonObject();
         json.addProperty("model", MODEL);
