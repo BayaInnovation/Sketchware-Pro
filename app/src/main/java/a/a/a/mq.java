@@ -89,6 +89,7 @@ public class mq {
                     "PhoneAuthProvider.OnVerificationStateChangedCallbacks";
             case ComponentBean.COMPONENT_TYPE_FIREBASE_CLOUD_MESSAGE -> "FirebaseCloudMessage";
             case ComponentBean.COMPONENT_TYPE_FIREBASE_AUTH_GOOGLE_LOGIN -> "GoogleSignInClient";
+            case ComponentBean.COMPONENT_TYPE_WEB_URL -> "String";
             default -> ComponentsHandler.var(componentId);
         };
     }

@@ -230,6 +230,34 @@ public class ExtraMenuBean {
                         pathSelectorMenu(ss);
                         return;
 
+                    case "webUrlEndpoints":
+                        // Logic to load web endpoints
+                         try {
+                            String webUrlPath = FileUtil.getExternalStorageDir() + "/.sketchware/data/" + sc_id + "/web_url_config";
+                            if (FileUtil.isExistFile(webUrlPath)) {
+                                String json = FileUtil.readFile(webUrlPath);
+                                com.besome.sketch.beans.ProjectLibraryBean libraryBean = new com.google.gson.Gson().fromJson(json, com.besome.sketch.beans.ProjectLibraryBean.class);
+                                if (libraryBean != null && libraryBean.configurations != null && libraryBean.configurations.containsKey("endpoints")) {
+                                    Object endpointsObj = libraryBean.configurations.get("endpoints");
+                                    if (endpointsObj instanceof ArrayList) {
+                                        ArrayList<String> endpoints = (ArrayList<String>) endpointsObj;
+                                        MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(logicEditor);
+                                        dialog.setTitle("Select Endpoint");
+                                        String[] items = endpoints.toArray(new String[0]);
+                                        dialog.setItems(items, (d, which) -> {
+                                            logicEditor.a(ss, items[which]);
+                                            d.dismiss();
+                                        });
+                                        dialog.show();
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return;
+
                     default:
                         defaultMenus(ss);
                 }

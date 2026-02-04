@@ -502,6 +502,24 @@ public class ExtraPaletteBlock {
                 logicEditor.a("d", "getJpegRotate");
                 return;
 
+            case 9:
+                try {
+                     String webUrlPath = FileUtil.getExternalStorageDir() + "/.sketchware/data/" + sc_id + "/web_url_config";
+                     if (FileUtil.isExistFile(webUrlPath)) {
+                         String json = FileUtil.readFile(webUrlPath);
+                         com.besome.sketch.beans.ProjectLibraryBean lib = new com.google.gson.Gson().fromJson(json, com.besome.sketch.beans.ProjectLibraryBean.class);
+                         if (lib != null && "Y".equals(lib.useYn)) {
+                             logicEditor.a("Web URL", getTitleBgColor());
+                             String blockName = "getWebUrl";
+                             if (lib.configurations != null && Boolean.TRUE.equals(lib.configurations.get("obfuscate"))) {
+                                 blockName = "getWebUrlObfuscated";
+                             }
+                             logicEditor.a("s", blockName);
+                         }
+                     }
+                } catch (Exception e) {}
+                return;
+
             case 6:
                 logicEditor.a(" ", "setEnable");
                 logicEditor.a("b", "getEnable");
@@ -579,6 +597,8 @@ public class ExtraPaletteBlock {
                         logicEditor.a(" ", "setTextColor");
                         logicEditor.a(" ", "setTextSize");
                     }
+                    
+
 
                     if (editTextUsed) {
                         logicEditor.a(" ", "setHint");

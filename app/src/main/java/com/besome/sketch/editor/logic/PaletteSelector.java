@@ -38,18 +38,19 @@ public class PaletteSelector extends RecyclerView {
             Helper.getResString(R.string.block_category_view_func),
             Helper.getResString(R.string.block_category_component_func),
             Helper.getResString(R.string.xml_strings),
-            Helper.getResString(R.string.block_category_moreblock)
+            Helper.getResString(R.string.block_category_moreblock),
+            "Web URL"
     };
 
     private final int[] MainCategoriesColors = {
             0xffee7d16, 0xffcc5b22, 0xffe1a92a,
             0xff5cb722, 0xff23b9a9, 0xffa1887f,
             0xff4a6cd4, 0xff2ca5e2, 0xff7c83db,
-            0xff8a55d7
+            0xff8a55d7, 0
     };
 
     private final int[] MainCategoriesIds = {
-            0, 1, 2, 3, 4, 5, 6, 7, -1, 8
+            0, 1, 2, 3, 4, 5, 6, 7, -1, 8, 9
     };
 
     private String searchValue = "";
@@ -72,6 +73,7 @@ public class PaletteSelector extends RecyclerView {
 
     private void initializePalettes() {
         allPalettes = new ArrayList<>();
+        MainCategoriesColors[10] = androidx.core.content.ContextCompat.getColor(context, R.color.web_url_palette_color);
 
         for (int i = 0; i < MainCategoriesNames.length; i++) {
             allPalettes.add(new paletteSelectorRecord(MainCategoriesIds[i], MainCategoriesNames[i], MainCategoriesColors[i]));

@@ -40,6 +40,10 @@ import mod.jbk.editor.manage.library.ExcludeBuiltInLibrariesLibraryItemView;
 import pro.sketchware.R;
 import pro.sketchware.utility.UI;
 
+import com.besome.sketch.editor.manage.library.weburl.ManageWebUrlActivity;
+import com.google.gson.Gson;
+import pro.sketchware.utility.FileUtil;
+
 public class ManageLibraryActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
     private final int REQUEST_CODE_ADMOB_ACTIVITY = 234;
@@ -48,6 +52,7 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
     private final int REQUEST_CODE_GOOGLE_MAPS_ACTIVITY = 241;
     private final int REQUEST_CODE_MATERIAL3_ACTIVITY = 242;
     private final int REQUEST_CODE_CUSTOM_ITEM_LIBRARY_ACTIVITY = 243;
+    private final int REQUEST_CODE_WEB_URL_ACTIVITY = 244;
 
     private String sc_id;
     private LinearLayout libraryItemLayout;
@@ -56,11 +61,13 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
     private ProjectLibraryBean compatLibraryBean;
     private ProjectLibraryBean admobLibraryBean;
     private ProjectLibraryBean googleMapLibraryBean;
+    private ProjectLibraryBean webUrlLibraryBean;
 
     private String originalFirebaseUseYn = "N";
     private String originalCompatUseYn = "N";
     private String originalAdmobUseYn = "N";
     private String originalGoogleMapUseYn = "N";
+    private String originalWebUrlUseYn = "N";
 
     private final List<LibraryItemView> libraryItems = new ArrayList<>();
 
@@ -128,6 +135,7 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
                 case ProjectLibraryBean.PROJECT_LIB_TYPE_ADMOB -> admobLibraryBean = libraryBean;
                 case ProjectLibraryBean.PROJECT_LIB_TYPE_GOOGLE_MAP ->
                         googleMapLibraryBean = libraryBean;
+                case ProjectLibraryBean.PROJECT_LIB_TYPE_WEB_URL -> webUrlLibraryBean = libraryBean;
             }
         }
 
@@ -206,6 +214,10 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
         jC.a(sc_id).a(firebaseLibraryBean);
         jC.a(sc_id).a(admobLibraryBean, jC.b(sc_id));
         jC.a(sc_id).b(googleMapLibraryBean, jC.b(sc_id));
+        
+        // Save Web URL config manually
+        String webUrlPath = FileUtil.getExternalStorageDir() + "/.sketchware/data/" + sc_id + "/web_url_config";
+        FileUtil.writeFile(webUrlPath, new Gson().toJson(webUrlLibraryBean));
     }
 
     @Override
@@ -234,6 +246,10 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
 
                 case REQUEST_CODE_GOOGLE_MAPS_ACTIVITY:
                     initializeLibrary(data.getParcelableExtra("google_map"));
+                    break;
+                    
+                case REQUEST_CODE_WEB_URL_ACTIVITY:
+                    initializeLibrary(data.getParcelableExtra("web_url"));
                     break;
 
                 case REQUEST_CODE_CUSTOM_ITEM_LIBRARY_ACTIVITY:
@@ -294,6 +310,13 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
 
                     case ProjectLibraryBean.PROJECT_LIB_TYPE_MATERIAL3:
                         toMaterial3Activity();
+                        break;
+                    case ProjectLibraryBean.PROJECT_LIB_TYPE_WEB_URL:
+                        Intent intent = new Intent(getApplicationContext(), ManageWebUrlActivity.class);
+                        intent.putExtra("sc_id", sc_id);
+                        intent.putExtra("web_url", webUrlLibraryBean);
+                        startActivityForResult(intent, REQUEST_CODE_WEB_URL_ACTIVITY);
+                        break;
                 }
             }
         }
@@ -359,6 +382,18 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
                 googleMapLibraryBean = new ProjectLibraryBean(ProjectLibraryBean.PROJECT_LIB_TYPE_GOOGLE_MAP);
             }
             originalGoogleMapUseYn = googleMapLibraryBean.useYn;
+
+            // Load Web URL config
+            String webUrlPath = FileUtil.getExternalStorageDir() + "/.sketchware/data/" + sc_id + "/web_url_config";
+            if (FileUtil.isExistFile(webUrlPath)) {
+                String json = FileUtil.readFile(webUrlPath);
+                webUrlLibraryBean = new Gson().fromJson(json, ProjectLibraryBean.class);
+            }
+            if (webUrlLibraryBean == null) {
+                webUrlLibraryBean = new ProjectLibraryBean(ProjectLibraryBean.PROJECT_LIB_TYPE_WEB_URL);
+            }
+            originalWebUrlUseYn = webUrlLibraryBean.useYn;
+
         } else {
             firebaseLibraryBean = savedInstanceState.getParcelable("firebase");
             originalFirebaseUseYn = savedInstanceState.getString("originalFirebaseUseYn");
@@ -368,6 +403,8 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
             originalAdmobUseYn = savedInstanceState.getString("originalAdmobUseYn");
             googleMapLibraryBean = savedInstanceState.getParcelable("google_map");
             originalGoogleMapUseYn = savedInstanceState.getString("originalGoogleMapUseYn");
+            webUrlLibraryBean = savedInstanceState.getParcelable("web_url");
+            originalWebUrlUseYn = savedInstanceState.getString("originalWebUrlUseYn");
         }
 
         LibraryCategoryView basicCategory = addCategoryItem(null);
@@ -375,11 +412,8 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
         addCustomLibraryItem(ProjectLibraryBean.PROJECT_LIB_TYPE_MATERIAL3, basicCategory);
         addLibraryItem(firebaseLibraryBean, basicCategory);
         addLibraryItem(admobLibraryBean, basicCategory);
-        addLibraryItem(googleMapLibraryBean, basicCategory, false);
-
-        LibraryCategoryView externalCategory = addCategoryItem("External libraries");
-        addLibraryItem(new ProjectLibraryBean(ProjectLibraryBean.PROJECT_LIB_TYPE_LOCAL_LIB), externalCategory);
-        addLibraryItem(new ProjectLibraryBean(ProjectLibraryBean.PROJECT_LIB_TYPE_NATIVE_LIB), externalCategory, false);
+        addLibraryItem(googleMapLibraryBean, basicCategory);
+        addLibraryItem(webUrlLibraryBean, basicCategory, false);
 
         LibraryCategoryView advancedCategory = addCategoryItem("Advanced");
         addCustomLibraryItem(ProjectLibraryBean.PROJECT_LIB_TYPE_EXCLUDE_BUILTIN_LIBRARIES, advancedCategory, false);
@@ -400,10 +434,12 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
         outState.putParcelable("compat", compatLibraryBean);
         outState.putParcelable("admob", admobLibraryBean);
         outState.putParcelable("google_map", googleMapLibraryBean);
+        outState.putParcelable("web_url", webUrlLibraryBean);
         outState.putString("originalFirebaseUseYn", originalFirebaseUseYn);
         outState.putString("originalCompatUseYn", originalCompatUseYn);
         outState.putString("originalAdmobUseYn", originalAdmobUseYn);
         outState.putString("originalGoogleMapUseYn", originalGoogleMapUseYn);
+        outState.putString("originalWebUrlUseYn", originalWebUrlUseYn);
         super.onSaveInstanceState(outState);
     }
 

@@ -79,6 +79,28 @@ public class BlocksHandler {
         hashMap.put("spec", "When %m.view clicked");
         arrayList.add(hashMap);
 
+        hashMap = new HashMap<>(); // WebURL Block
+        hashMap.put("name", "getWebUrl");
+        hashMap.put("type", "s");
+        hashMap.put("typeName", "");
+        hashMap.put("code", "getString(R.string.web_url_base) + \"/\" + \"%1$s\"");
+        hashMap.put("color", "#8C1919");
+        hashMap.put("palette", "9"); // Palette 9 (Web URL)
+        hashMap.put("spec", "Web URL endpoint %m.webUrlEndpoints");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("name", "getWebUrlObfuscated");
+        hashMap.put("type", "s");
+        hashMap.put("typeName", "");
+        hashMap.put("code", "(new String(android.util.Base64.decode(getString(R.string.web_url_base), android.util.Base64.DEFAULT)) + \"/\" + \"%1$s\")");
+        hashMap.put("color", "#8C1919");
+        hashMap.put("palette", "9"); // Palette 9 (Web URL)
+        hashMap.put("spec", "Web URL endpoint %m.webUrlEndpoints");
+        arrayList.add(hashMap);
+
+
+
         hashMap = new HashMap<>();
         hashMap.put("name", "setRecyclerViewLayoutParams");
         hashMap.put("type", " ");
