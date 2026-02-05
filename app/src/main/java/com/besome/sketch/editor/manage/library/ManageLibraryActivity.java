@@ -41,6 +41,7 @@ import pro.sketchware.R;
 import pro.sketchware.utility.UI;
 
 import com.besome.sketch.editor.manage.library.weburl.ManageWebUrlActivity;
+import com.besome.sketch.editor.manage.library.supabase.ManageSupabaseActivity;
 import com.google.gson.Gson;
 import pro.sketchware.utility.FileUtil;
 
@@ -53,6 +54,7 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
     private final int REQUEST_CODE_MATERIAL3_ACTIVITY = 242;
     private final int REQUEST_CODE_CUSTOM_ITEM_LIBRARY_ACTIVITY = 243;
     private final int REQUEST_CODE_WEB_URL_ACTIVITY = 244;
+    private final int REQUEST_CODE_SUPABASE_ACTIVITY = 245;
 
     private String sc_id;
     private LinearLayout libraryItemLayout;
@@ -62,12 +64,14 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
     private ProjectLibraryBean admobLibraryBean;
     private ProjectLibraryBean googleMapLibraryBean;
     private ProjectLibraryBean webUrlLibraryBean;
+    private ProjectLibraryBean supabaseLibraryBean;
 
     private String originalFirebaseUseYn = "N";
     private String originalCompatUseYn = "N";
     private String originalAdmobUseYn = "N";
     private String originalGoogleMapUseYn = "N";
     private String originalWebUrlUseYn = "N";
+    private String originalSupabaseUseYn = "N";
 
     private final List<LibraryItemView> libraryItems = new ArrayList<>();
 
@@ -136,6 +140,7 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
                 case ProjectLibraryBean.PROJECT_LIB_TYPE_GOOGLE_MAP ->
                         googleMapLibraryBean = libraryBean;
                 case ProjectLibraryBean.PROJECT_LIB_TYPE_WEB_URL -> webUrlLibraryBean = libraryBean;
+                case ProjectLibraryBean.PROJECT_LIB_TYPE_SUPABASE -> supabaseLibraryBean = libraryBean;
             }
         }
 
@@ -218,6 +223,10 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
         // Save Web URL config manually
         String webUrlPath = FileUtil.getExternalStorageDir() + "/.sketchware/data/" + sc_id + "/web_url_config";
         FileUtil.writeFile(webUrlPath, new Gson().toJson(webUrlLibraryBean));
+
+        // Save Supabase config manually
+        String supabasePath = FileUtil.getExternalStorageDir() + "/.sketchware/data/" + sc_id + "/supabase_config";
+        FileUtil.writeFile(supabasePath, new Gson().toJson(supabaseLibraryBean));
     }
 
     @Override
@@ -250,6 +259,9 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
                     
                 case REQUEST_CODE_WEB_URL_ACTIVITY:
                     initializeLibrary(data.getParcelableExtra("web_url"));
+                    break;
+                case REQUEST_CODE_SUPABASE_ACTIVITY:
+                    initializeLibrary(data.getParcelableExtra("supabase"));
                     break;
 
                 case REQUEST_CODE_CUSTOM_ITEM_LIBRARY_ACTIVITY:
@@ -316,6 +328,12 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
                         intent.putExtra("sc_id", sc_id);
                         intent.putExtra("web_url", webUrlLibraryBean);
                         startActivityForResult(intent, REQUEST_CODE_WEB_URL_ACTIVITY);
+                        break;
+                    case ProjectLibraryBean.PROJECT_LIB_TYPE_SUPABASE:
+                        Intent intentSupabase = new Intent(getApplicationContext(), ManageSupabaseActivity.class);
+                        intentSupabase.putExtra("sc_id", sc_id);
+                        intentSupabase.putExtra("supabase", supabaseLibraryBean);
+                        startActivityForResult(intentSupabase, REQUEST_CODE_SUPABASE_ACTIVITY);
                         break;
                 }
             }
@@ -394,6 +412,17 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
             }
             originalWebUrlUseYn = webUrlLibraryBean.useYn;
 
+            // Load Supabase config
+            String supabasePath = FileUtil.getExternalStorageDir() + "/.sketchware/data/" + sc_id + "/supabase_config";
+            if (FileUtil.isExistFile(supabasePath)) {
+                String json = FileUtil.readFile(supabasePath);
+                supabaseLibraryBean = new Gson().fromJson(json, ProjectLibraryBean.class);
+            }
+            if (supabaseLibraryBean == null) {
+                supabaseLibraryBean = new ProjectLibraryBean(ProjectLibraryBean.PROJECT_LIB_TYPE_SUPABASE);
+            }
+            originalSupabaseUseYn = supabaseLibraryBean.useYn;
+
         } else {
             firebaseLibraryBean = savedInstanceState.getParcelable("firebase");
             originalFirebaseUseYn = savedInstanceState.getString("originalFirebaseUseYn");
@@ -405,6 +434,8 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
             originalGoogleMapUseYn = savedInstanceState.getString("originalGoogleMapUseYn");
             webUrlLibraryBean = savedInstanceState.getParcelable("web_url");
             originalWebUrlUseYn = savedInstanceState.getString("originalWebUrlUseYn");
+            supabaseLibraryBean = savedInstanceState.getParcelable("supabase");
+            originalSupabaseUseYn = savedInstanceState.getString("originalSupabaseUseYn");
         }
 
         LibraryCategoryView basicCategory = addCategoryItem(null);
@@ -414,6 +445,7 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
         addLibraryItem(admobLibraryBean, basicCategory);
         addLibraryItem(googleMapLibraryBean, basicCategory);
         addLibraryItem(webUrlLibraryBean, basicCategory, false);
+        addLibraryItem(supabaseLibraryBean, basicCategory, false);
 
         LibraryCategoryView advancedCategory = addCategoryItem("Advanced");
         addCustomLibraryItem(ProjectLibraryBean.PROJECT_LIB_TYPE_EXCLUDE_BUILTIN_LIBRARIES, advancedCategory, false);
@@ -439,7 +471,10 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
         outState.putString("originalCompatUseYn", originalCompatUseYn);
         outState.putString("originalAdmobUseYn", originalAdmobUseYn);
         outState.putString("originalGoogleMapUseYn", originalGoogleMapUseYn);
+        outState.putParcelable("web_url", webUrlLibraryBean);
         outState.putString("originalWebUrlUseYn", originalWebUrlUseYn);
+        outState.putParcelable("supabase", supabaseLibraryBean);
+        outState.putString("originalSupabaseUseYn", originalSupabaseUseYn);
         super.onSaveInstanceState(outState);
     }
 

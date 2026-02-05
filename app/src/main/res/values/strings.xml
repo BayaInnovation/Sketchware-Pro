@@ -2,6 +2,27 @@
     <string name="app_name">Sketchware Pro</string>
     <string name="design_library_web_url_title">Web URL Manager</string>
     <string name="design_library_web_url_description">Manage Base URL and Endpoints for your project.</string>
+    <string name="design_library_supabase_title">Supabase</string>
+    <string name="design_library_supabase_description">The Open Source Firebase Alternative. Use Postgres Database, Authentication, instant APIs, Realtime subscriptions and Storage.</string>
+    <string name="design_library_supabase_title_enable">Enabled</string>
+    <string name="design_library_supabase_title_url">Project URL</string>
+    <string name="design_library_supabase_title_anon_key">Anon Public Key</string>
+    <string name="design_library_supabase_title_service_key">Service Role Key (Optional)</string>
+    <string name="design_library_supabase_hint_url">https://xyz.supabase.co</string>
+    <string name="design_library_supabase_hint_anon_key">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</string>
+    <string name="design_library_supabase_button_console">Go to Supabase Console</string>
+    <string name="design_library_supabase_guide_url">https://sketchware-pro.vercel.app/docs/components/supabase</string>
+    <string name="component_description_supabase_auth">Authenticate users with Supabase Auth</string>
+    <string name="component_description_supabase_db">Read and Write to your Supabase Database</string>
+    <string name="component_description_supabase_storage">Store and serve files</string>
+    <string name="component_description_supabase_realtime">Listen to database changes in real-time</string>
+    <string name="component_description_supabase_functions">Invoke Supabase Edge Functions</string>
+    <string name="component_title_supabase_auth">SupabaseAuth</string>
+    <string name="component_title_supabase_db">SupabaseDB</string>
+    <string name="component_title_supabase_storage">SupabaseStorage</string>
+    <string name="component_title_supabase_realtime">SupabaseRealtime</string>
+    <string name="component_title_supabase_functions">SupabaseFunctions</string>
+    <string name="supabase_activity_title">Supabase Settings</string>
     <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
     <string name="besome_blog_url">http://medium.com/sketchware</string>
     <string name="block_add_list_int_body_1">to</string>
@@ -1356,6 +1377,12 @@ Do you want to continue?"</string>
     <string name="event_onfailure">onFailure</string>
     <string name="event_onfilespicked">onFilesPicked</string>
     <string name="event_onfilespickedcancel">onFilesPickedCancel</string>
+    <string name="event_onsignupusercomplete">onSignUpUserComplete</string>
+    <string name="event_onauthstatechanged">onAuthStateChanged</string>
+    <string name="event_onselectcomplete">onSelectComplete</string>
+    <string name="event_oninsertcomplete">onInsertComplete</string>
+    <string name="event_onupdatecomplete">onUpdateComplete</string>
+    <string name="event_ondeletecomplete">onDeleteComplete</string>
     <string name="event_onitemclicked">onItemClicked</string>
     <string name="event_onitemlongclicked">onItemLongClicked</string>
     <string name="event_onitemselected">onItemSelected</string>
@@ -2291,4 +2318,6 @@ Please try again later"</string>
     <string name="link_sw_assist">https://play.google.com/store/apps/details?id=com.w3wide.swassist</string>
 
 
+    <string name="common_word_disable">Disable</string>
+    <string name="common_word_enable">Enable</string>
 </resources>

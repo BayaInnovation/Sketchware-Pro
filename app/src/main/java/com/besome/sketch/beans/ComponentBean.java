@@ -54,6 +54,11 @@ public class ComponentBean extends CollapsibleBean implements Parcelable {
     public static final int COMPONENT_TYPE_FIREBASE_CLOUD_MESSAGE = 30;
     public static final int COMPONENT_TYPE_FIREBASE_AUTH_GOOGLE_LOGIN = 31;
     public static final int COMPONENT_TYPE_WEB_URL = 37;
+    public static final int COMPONENT_TYPE_SUPABASE_AUTH = 38;
+    public static final int COMPONENT_TYPE_SUPABASE_DATABASE = 39;
+    public static final int COMPONENT_TYPE_SUPABASE_STORAGE = 40;
+    public static final int COMPONENT_TYPE_SUPABASE_REALTIME = 41;
+    public static final int COMPONENT_TYPE_SUPABASE_FUNCTIONS = 42;
 
     public Gx classInfo;
     @Expose
@@ -145,6 +150,11 @@ public class ComponentBean extends CollapsibleBean implements Parcelable {
                     "";
             case COMPONENT_TYPE_FIREBASE_STORAGE ->
                     "https://docs.sketchware.io/docs/component-firebase-storage.html";
+            case COMPONENT_TYPE_SUPABASE_AUTH -> "https://supabase.com/docs/guides/auth";
+            case COMPONENT_TYPE_SUPABASE_DATABASE -> "https://supabase.com/docs/guides/database";
+            case COMPONENT_TYPE_SUPABASE_STORAGE -> "https://supabase.com/docs/guides/storage";
+            case COMPONENT_TYPE_SUPABASE_REALTIME -> "https://supabase.com/docs/guides/realtime";
+            case COMPONENT_TYPE_SUPABASE_FUNCTIONS -> "https://supabase.com/docs/guides/functions";
             case COMPONENT_TYPE_CAMERA -> "https://docs.sketchware.io/docs/component-camera.html";
             case COMPONENT_TYPE_FILE_PICKER ->
                     "https://docs.sketchware.io/docs/component-filepicker.html";
@@ -187,6 +197,11 @@ public class ComponentBean extends CollapsibleBean implements Parcelable {
             case COMPONENT_TYPE_FIREBASE_AUTH_PHONE -> "PhoneAuth";
             case COMPONENT_TYPE_FIREBASE_CLOUD_MESSAGE -> "Cloud Message";
             case COMPONENT_TYPE_FIREBASE_AUTH_GOOGLE_LOGIN -> "Google Login";
+            case COMPONENT_TYPE_SUPABASE_AUTH -> "Supabase Auth";
+            case COMPONENT_TYPE_SUPABASE_DATABASE -> "Supabase DB";
+            case COMPONENT_TYPE_SUPABASE_STORAGE -> "Supabase Storage";
+            case COMPONENT_TYPE_SUPABASE_REALTIME -> "Supabase Realtime";
+            case COMPONENT_TYPE_SUPABASE_FUNCTIONS -> "Supabase Functions";
             case COMPONENT_TYPE_WEB_URL -> "Web URL";
             default -> ComponentsHandler.name(type);
         };
@@ -224,6 +239,11 @@ public class ComponentBean extends CollapsibleBean implements Parcelable {
             case "FirebasePhoneAuth" -> COMPONENT_TYPE_FIREBASE_AUTH_PHONE;
             case "FirebaseCloudMessage" -> COMPONENT_TYPE_FIREBASE_CLOUD_MESSAGE;
             case "FirebaseGoogleLogin" -> COMPONENT_TYPE_FIREBASE_AUTH_GOOGLE_LOGIN;
+            case "SupabaseAuth" -> COMPONENT_TYPE_SUPABASE_AUTH;
+            case "SupabaseDB" -> COMPONENT_TYPE_SUPABASE_DATABASE;
+            case "SupabaseStorage" -> COMPONENT_TYPE_SUPABASE_STORAGE;
+            case "SupabaseRealtime" -> COMPONENT_TYPE_SUPABASE_REALTIME;
+            case "SupabaseFunctions" -> COMPONENT_TYPE_SUPABASE_FUNCTIONS;
             case "WebURL" -> COMPONENT_TYPE_WEB_URL;
             default -> ComponentsHandler.id(typeName);
         };
@@ -261,6 +281,11 @@ public class ComponentBean extends CollapsibleBean implements Parcelable {
             case COMPONENT_TYPE_FIREBASE_AUTH_PHONE -> "FirebasePhoneAuth";
             case COMPONENT_TYPE_FIREBASE_CLOUD_MESSAGE -> "FirebaseCloudMessage";
             case COMPONENT_TYPE_FIREBASE_AUTH_GOOGLE_LOGIN -> "FirebaseGoogleLogin";
+            case COMPONENT_TYPE_SUPABASE_AUTH -> "SupabaseAuth";
+            case COMPONENT_TYPE_SUPABASE_DATABASE -> "SupabaseDB";
+            case COMPONENT_TYPE_SUPABASE_STORAGE -> "SupabaseStorage";
+            case COMPONENT_TYPE_SUPABASE_REALTIME -> "SupabaseRealtime";
+            case COMPONENT_TYPE_SUPABASE_FUNCTIONS -> "SupabaseFunctions";
             case COMPONENT_TYPE_WEB_URL -> "WebURL";
             default -> ComponentsHandler.typeName(type);
         };
@@ -307,6 +332,11 @@ public class ComponentBean extends CollapsibleBean implements Parcelable {
             case COMPONENT_TYPE_FIREBASE_CLOUD_MESSAGE -> R.string.component_description_fb_fcm;
             case COMPONENT_TYPE_FIREBASE_AUTH_GOOGLE_LOGIN ->
                     R.string.design_library_web_url_description; // Placeholder or reuse
+            case COMPONENT_TYPE_SUPABASE_AUTH -> R.string.component_description_supabase_auth;
+            case COMPONENT_TYPE_SUPABASE_DATABASE -> R.string.component_description_supabase_db;
+            case COMPONENT_TYPE_SUPABASE_STORAGE -> R.string.component_description_supabase_storage;
+            case COMPONENT_TYPE_SUPABASE_REALTIME -> R.string.component_description_supabase_realtime;
+            case COMPONENT_TYPE_SUPABASE_FUNCTIONS -> R.string.component_description_supabase_functions;
             case COMPONENT_TYPE_WEB_URL -> R.string.design_library_web_url_description;
             default -> 0;
         };
@@ -344,6 +374,11 @@ public class ComponentBean extends CollapsibleBean implements Parcelable {
             case COMPONENT_TYPE_FIREBASE_AUTH_PHONE -> R.drawable.ic_mtrl_firebase_sms;
             case COMPONENT_TYPE_FIREBASE_CLOUD_MESSAGE -> R.drawable.ic_mtrl_firebase_cloud;
             case COMPONENT_TYPE_FIREBASE_AUTH_GOOGLE_LOGIN -> R.drawable.ic_mtrl_firebase_google;
+            case COMPONENT_TYPE_SUPABASE_AUTH -> R.drawable.ic_mtrl_firebase_auth;
+            case COMPONENT_TYPE_SUPABASE_DATABASE -> R.drawable.ic_mtrl_firebase_rtdb;
+            case COMPONENT_TYPE_SUPABASE_STORAGE -> R.drawable.ic_mtrl_firebase_storage;
+            case COMPONENT_TYPE_SUPABASE_REALTIME -> R.drawable.ic_mtrl_sync;
+            case COMPONENT_TYPE_SUPABASE_FUNCTIONS -> R.drawable.ic_mtrl_settings_input;
             case COMPONENT_TYPE_WEB_URL -> R.drawable.ic_mtrl_wifi;
             case 36 -> R.drawable.ic_mtrl_sync;
 
@@ -383,6 +418,11 @@ public class ComponentBean extends CollapsibleBean implements Parcelable {
             case COMPONENT_TYPE_FIREBASE_AUTH_PHONE -> "FirebasePhoneAuth";
             case COMPONENT_TYPE_FIREBASE_CLOUD_MESSAGE -> "FirebaseCloudMessage";
             case COMPONENT_TYPE_FIREBASE_AUTH_GOOGLE_LOGIN -> "FirebaseGoogleLogin";
+            case COMPONENT_TYPE_SUPABASE_AUTH -> "SupabaseAuth";
+            case COMPONENT_TYPE_SUPABASE_DATABASE -> "SupabaseDB";
+            case COMPONENT_TYPE_SUPABASE_STORAGE -> "SupabaseStorage";
+            case COMPONENT_TYPE_SUPABASE_REALTIME -> "SupabaseRealtime";
+            case COMPONENT_TYPE_SUPABASE_FUNCTIONS -> "SupabaseFunctions";
             case COMPONENT_TYPE_WEB_URL -> "WebURL";
             default -> ComponentsHandler.getBuildClassById(type);
         };

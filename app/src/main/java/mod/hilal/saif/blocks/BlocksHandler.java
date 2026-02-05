@@ -1998,6 +1998,55 @@ public class BlocksHandler {
         hashMap = new HashMap<>();
         hashMap.put("name", "tilSetError");
         hashMap.put("type", " ");
+        // ... (existing code)
+
+        // Supabase Auth Blocks
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseSignIn");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.auth().signInWithEmail(new Email(%s), %s, new Callback<AuthSession>() ... );"); // Simplified/Placeholder
+        hashMap.put("color", "#FFCA28"); // Amber/Auth color
+        hashMap.put("palette", "10"); // New palette ID or existing
+        hashMap.put("spec", "Supabase Auth %m.supabaseAuth Sign In Email %s Password %s");
+        arrayList.add(hashMap);
+        
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseSignUp");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.auth().signUpWithEmail(new Email(%s), %s, new Callback<AuthSession>() ... );");
+        hashMap.put("color", "#FFCA28");
+        hashMap.put("palette", "10");
+        hashMap.put("spec", "Supabase Auth %m.supabaseAuth Sign Up Email %s Password %s");
+        arrayList.add(hashMap);
+
+        // Supabase DB Blocks
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseDbSelect");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.from(%s).select(%s).execute();");
+        hashMap.put("color", "#4CAF50"); // Green/DB color
+        hashMap.put("palette", "10");
+        hashMap.put("spec", "Supabase DB %m.supabaseDb Select Table %s Columns %s");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseDbInsert");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.from(%s).insert(%s).execute();");
+        hashMap.put("color", "#4CAF50");
+        hashMap.put("palette", "10");
+        hashMap.put("spec", "Supabase DB %m.supabaseDb Insert Table %s Data %m.map");
+        arrayList.add(hashMap);
+
+        // Supabase Storage Blocks
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseStorageUpload");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.storage().from(%s).upload(%s, %s);");
+        hashMap.put("color", "#2196F3"); // Blue/Storage
+        hashMap.put("palette", "11");
+        hashMap.put("spec", "Supabase Storage %m.supabaseStorage Upload Bucket %s Path %s File %s");
+        arrayList.add(hashMap);
         hashMap.put("code", "%s.setError(%s);");
         hashMap.put("color", "#4A6CD4");
         hashMap.put("palette", "-1");

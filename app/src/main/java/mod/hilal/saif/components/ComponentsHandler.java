@@ -52,6 +52,21 @@ public class ComponentsHandler {
         if (name.equals("AsyncTask")) {
             return 36;
         }
+        if (name.equals("SupabaseAuth")) {
+            return 38;
+        }
+        if (name.equals("SupabaseDatabase")) {
+            return 39;
+        }
+        if (name.equals("SupabaseStorage")) {
+            return 40;
+        }
+        if (name.equals("SupabaseRealtime")) {
+            return 41;
+        }
+        if (name.equals("SupabaseFunctions")) {
+            return 42;
+        }
 
         for (int i = 0; i < cachedCustomComponents.size(); i++) {
             HashMap<String, Object> component = cachedCustomComponents.get(i);
@@ -92,6 +107,11 @@ public class ComponentsHandler {
         if (id == 36) {
             return "AsyncTask";
         }
+        if (id == 38) return "SupabaseAuth";
+        if (id == 39) return "SupabaseDatabase";
+        if (id == 40) return "SupabaseStorage";
+        if (id == 41) return "SupabaseRealtime";
+        if (id == 42) return "SupabaseFunctions";
 
         for (int i = 0; i < cachedCustomComponents.size(); i++) {
             HashMap<String, Object> component = cachedCustomComponents.get(i);
@@ -134,6 +154,11 @@ public class ComponentsHandler {
         if (id == 36) {
             return "AsyncTask";
         }
+        if (id == 38) return "Supabase Auth";
+        if (id == 39) return "Supabase DB";
+        if (id == 40) return "Supabase Storage";
+        if (id == 41) return "Supabase Realtime";
+        if (id == 42) return "Supabase Functions";
 
         for (int i = 0; i < cachedCustomComponents.size(); i++) {
             HashMap<String, Object> component = cachedCustomComponents.get(i);
@@ -175,6 +200,11 @@ public class ComponentsHandler {
         if (id == 36) {
             return R.drawable.ic_cycle_color_48dp;
         }
+        if (id == 38) return R.drawable.ic_mtrl_shield_lock; // Auth
+        if (id == 39) return R.drawable.ic_mtrl_database_added; // Database (closest match)
+        if (id == 40) return R.drawable.ic_mtrl_firebase_storage; // Storage
+        if (id == 41) return R.drawable.ic_mtrl_time; // Realtime
+        if (id == 42) return R.drawable.ic_mtrl_settings; // Functions
 
         for (int i = 0; i < cachedCustomComponents.size(); i++) {
             HashMap<String, Object> component = cachedCustomComponents.get(i);
@@ -310,6 +340,8 @@ public class ComponentsHandler {
         if (id == 36) {
             return "AsyncTask";
         }
+        // For now, these share a generic class structure or we use the client directly
+        if (id >= 38 && id <= 42) return "Component";
 
         for (int i = 0; i < cachedCustomComponents.size(); i++) {
             HashMap<String, Object> component = cachedCustomComponents.get(i);
@@ -354,6 +386,11 @@ public class ComponentsHandler {
     //structure : list.add(new ComponentBean(27));
     public static void add(ArrayList<ComponentBean> list) {
         list.add(new ComponentBean(36));
+        list.add(new ComponentBean(38));
+        list.add(new ComponentBean(39));
+        list.add(new ComponentBean(40));
+        list.add(new ComponentBean(41));
+        list.add(new ComponentBean(42));
 
         for (int i = 0; i < cachedCustomComponents.size(); i++) {
             HashMap<String, Object> component = cachedCustomComponents.get(i);
@@ -379,6 +416,11 @@ public class ComponentsHandler {
         if (id == 36) {
             return "#";
         }
+        if (id == 38) return "sbAuth";
+        if (id == 39) return "sbDB";
+        if (id == 40) return "sbStorage";
+        if (id == 41) return "sbRealtime";
+        if (id == 42) return "sbFunctions";
 
         for (int i = 0; i < cachedCustomComponents.size(); i++) {
             HashMap<String, Object> component = cachedCustomComponents.get(i);
@@ -422,6 +464,11 @@ public class ComponentsHandler {
         if (name.equals("AsyncTask")) {
             return "Component.AsyncTask";
         }
+        if (name.equals("SupabaseAuth")) return "Component.SupabaseAuth";
+        if (name.equals("SupabaseDatabase")) return "Component.SupabaseDatabase";
+        if (name.equals("SupabaseStorage")) return "Component.SupabaseStorage";
+        if (name.equals("SupabaseRealtime")) return "Component.SupabaseRealtime";
+        if (name.equals("SupabaseFunctions")) return "Component.SupabaseFunctions";
 
         for (int i = 0, customComponentsSize = cachedCustomComponents.size(); i < customComponentsSize; i++) {
             HashMap<String, Object> component = cachedCustomComponents.get(i);

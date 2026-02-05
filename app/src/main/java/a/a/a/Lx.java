@@ -705,6 +705,29 @@ public class Lx {
                     fieldDeclaration += "\r\nprivate TimePickerDialog.OnTimeSetListener " + typeInstanceName + "_listener;";
                     break;
 
+                case "SupabaseAuth":
+                    fieldDeclaration += "\r\nprivate SupabaseClient " + typeInstanceName + ";";
+                    // Add listeners if needed, usually we treat the client as the main object
+                    // But for Sketchware events we might need separate listener fields if we follow the generated code pattern
+                    // For now, let's assume we use the client directly or a wrapper
+                    break;
+
+                case "SupabaseDatabase":
+                    fieldDeclaration += "\r\nprivate SupabaseClient " + typeInstanceName + ";"; // Or PostgrestClient
+                    break;
+
+                case "SupabaseStorage":
+                    fieldDeclaration += "\r\nprivate SupabaseClient " + typeInstanceName + ";"; // Or StorageClient
+                    break;
+                    
+                case "SupabaseRealtime":
+                    fieldDeclaration += "\r\nprivate SupabaseClient " + typeInstanceName + ";"; // Or RealtimeClient
+                    break;
+                    
+                case "SupabaseFunctions":
+                     fieldDeclaration += "\r\nprivate SupabaseClient " + typeInstanceName + ";"; // Or FunctionsClient
+                     break;
+
                 default:
                     fieldDeclaration = ComponentsHandler.extraVar(typeName, fieldDeclaration, typeInstanceName);
                     break;

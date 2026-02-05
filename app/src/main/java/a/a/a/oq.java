@@ -27,7 +27,7 @@ public class oq {
                     R.drawable.bg_event_type_activity;
             case "onBannerAdClicked", "onClick" -> R.drawable.ic_mtrl_touch;
             case "onCheckedChange" -> R.drawable.ic_mtrl_checkbox;
-            case "onItemSelected" -> R.drawable.ic_mtrl_pull_down;
+            case "onItemSelected", "onSelectComplete" -> R.drawable.ic_mtrl_pull_down;
             case "onItemClicked" -> R.drawable.ic_mtrl_list;
             case "onItemLongClicked" -> R.drawable.ic_mtrl_touch_long;
             case "onTextChanged" -> R.drawable.ic_mtrl_text_change;
@@ -43,13 +43,13 @@ public class oq {
             case "onAnimationRepeat" -> R.drawable.ic_mtrl_refresh;
             case "onBindCustomView" -> R.drawable.ic_mtrl_bind;
             case "onDateChange" -> R.drawable.ic_mtrl_date_changed;
-            case "onChildAdded" -> R.drawable.ic_mtrl_database_added;
-            case "onChildChanged" -> R.drawable.ic_mtrl_database_edit;
+            case "onChildAdded", "onInsertComplete" -> R.drawable.ic_mtrl_database_added;
+            case "onChildChanged", "onUpdateComplete" -> R.drawable.ic_mtrl_database_edit;
             case "onChildMoved" -> R.drawable.ic_mtrl_database_moved;
-            case "onChildRemoved", "onDeleteSuccess" -> R.drawable.ic_mtrl_database_off;
+            case "onChildRemoved", "onDeleteSuccess", "onDeleteComplete" -> R.drawable.ic_mtrl_database_off;
             case "onCancelled" -> R.drawable.ic_mtrl_cancel;
             case "onCreateUserComplete" -> R.drawable.ic_mtrl_user_create;
-            case "onSignInUserComplete" -> R.drawable.ic_mtrl_signin;
+            case "onSignInUserComplete", "onSignUpUserComplete", "onAuthStateChanged" -> R.drawable.ic_mtrl_user_create;
             case "onResetPasswordEmailSent" -> R.drawable.ic_mtrl_reset;
             case "onSensorChanged", "onResponse" -> R.drawable.ic_mtrl_sensor;
             case "onAccuracyChanged" -> R.drawable.ic_mtrl_center;
@@ -117,6 +117,8 @@ public class oq {
             case "onSensorChanged" -> Helper.getResString(R.string.event_onsensorchanged);
             case "onCreateUserComplete" -> Helper.getResString(R.string.event_oncreateusercomplete);
             case "onSignInUserComplete" -> Helper.getResString(R.string.event_onsigninusercomplete);
+            case "onSignUpUserComplete" -> Helper.getResString(R.string.event_onsignupusercomplete);
+            case "onAuthStateChanged" -> Helper.getResString(R.string.event_onauthstatechanged);
             case "onResetPasswordEmailSent" ->
                     Helper.getResString(R.string.event_onresetpasswordemailsent);
             case "onInterstitialAdLoaded" -> Helper.getResString(R.string.event_onadloaded);
@@ -146,6 +148,10 @@ public class oq {
             case "onMapReady" -> Helper.getResString(R.string.event_on_map_ready);
             case "onMarkerClicked" -> Helper.getResString(R.string.event_on_marker_clicked);
             case "onLocationChanged" -> Helper.getResString(R.string.event_on_location_changed);
+            case "onSelectComplete" -> Helper.getResString(R.string.event_onselectcomplete);
+            case "onInsertComplete" -> Helper.getResString(R.string.event_oninsertcomplete);
+            case "onUpdateComplete" -> Helper.getResString(R.string.event_onupdatecomplete);
+            case "onDeleteComplete" -> Helper.getResString(R.string.event_ondeletecomplete);
             default -> ManageEvent.getEventDescription(eventName);
         };
     }
@@ -227,6 +233,27 @@ public class oq {
 
         if (classInfo.a("LocationManager")) {
             eventList.add("onLocationChanged");
+        }
+
+        if (classInfo.a("SupabaseAuth")) {
+            eventList.add("onSignInUserComplete");
+            eventList.add("onSignUpUserComplete");
+            eventList.add("onAuthStateChanged");
+            eventList.add("onResetPasswordEmailSent");
+        }
+
+        if (classInfo.a("SupabaseDatabase")) {
+            eventList.add("onSelectComplete");
+            eventList.add("onInsertComplete");
+            eventList.add("onUpdateComplete");
+            eventList.add("onDeleteComplete");
+            eventList.add("onFailure");
+        }
+
+        if (classInfo.a("SupabaseStorage")) {
+            eventList.add("onUploadSuccess");
+            eventList.add("onDownloadSuccess");
+            eventList.add("onFailure");
         }
 
         return eventList.toArray(new String[0]);
@@ -326,6 +353,18 @@ public class oq {
             eventList.add("locationListener");
         }
 
+        if (classInfo.a("SupabaseAuth")) {
+            eventList.add("supabaseAuthListener");
+        }
+
+        if (classInfo.a("SupabaseDatabase")) {
+            eventList.add("supabaseDbListener");
+        }
+
+        if (classInfo.a("SupabaseStorage")) {
+            eventList.add("supabaseStorageListener");
+        }
+
         return eventList.toArray(new String[0]);
     }
 
@@ -417,6 +456,24 @@ public class oq {
             case "onMapReadyCallback" -> eventList.add("onMapReady");
             case "onMapMarkerClickListener" -> eventList.add("onMarkerClicked");
             case "locationListener" -> eventList.add("onLocationChanged");
+            case "supabaseAuthListener" -> {
+                eventList.add("onSignInUserComplete");
+                eventList.add("onSignUpUserComplete");
+                eventList.add("onAuthStateChanged");
+                eventList.add("onResetPasswordEmailSent");
+            }
+            case "supabaseDbListener" -> {
+                eventList.add("onSelectComplete");
+                eventList.add("onInsertComplete");
+                eventList.add("onUpdateComplete");
+                eventList.add("onDeleteComplete");
+                eventList.add("onFailure");
+            }
+            case "supabaseStorageListener" -> {
+                eventList.add("onUploadSuccess");
+                eventList.add("onDownloadSuccess");
+                eventList.add("onFailure");
+            }
         }
 
         return eventList.toArray(new String[0]);
