@@ -51,7 +51,7 @@ public class PaletteSelector extends RecyclerView {
     };
 
     private final int[] MainCategoriesIds = {
-            0, 1, 2, 3, 4, 5, 6, 7, -1, 8, 9, 10
+            0, 1, 2, 3, 4, 5, 6, 7, -1, 8, 19, 20
     };
 
     private String searchValue = "";
@@ -74,8 +74,9 @@ public class PaletteSelector extends RecyclerView {
 
     private void initializePalettes() {
         allPalettes = new ArrayList<>();
-        MainCategoriesColors[10] = androidx.core.content.ContextCompat.getColor(context, R.color.web_url_palette_color);
-
+        MainCategoriesColors[10] = androidx.core.content.ContextCompat.getColor(context, R.color.web_url_palette_color); // Web URL
+        // Supabase is at index 11 in the arrays (ID 20)
+        
         for (int i = 0; i < MainCategoriesNames.length; i++) {
             allPalettes.add(new paletteSelectorRecord(MainCategoriesIds[i], MainCategoriesNames[i], MainCategoriesColors[i]));
         }

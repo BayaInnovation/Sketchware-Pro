@@ -1383,6 +1383,11 @@ Do you want to continue?"</string>
     <string name="event_oninsertcomplete">onInsertComplete</string>
     <string name="event_onupdatecomplete">onUpdateComplete</string>
     <string name="event_ondeletecomplete">onDeleteComplete</string>
+    <string name="event_onrealtimeinsert">onRealtimeInsert</string>
+    <string name="event_onrealtimeupdate">onRealtimeUpdate</string>
+    <string name="event_onrealtimedelete">onRealtimeDelete</string>
+    <string name="event_onsubscribe">onSubscribe</string>
+    <string name="event_onunsubscribe">onUnsubscribe</string>
     <string name="event_onitemclicked">onItemClicked</string>
     <string name="event_onitemlongclicked">onItemLongClicked</string>
     <string name="event_onitemselected">onItemSelected</string>

@@ -61,6 +61,9 @@ public class oq {
             case "onAdDismissedFullScreenContent", "onBannerAdClosed" ->
                     R.drawable.ic_mtrl_preview_off;
             case "onUploadProgress" -> R.drawable.ic_mtrl_uploading;
+            case "onRealtimeInsert", "onRealtimeUpdate" -> R.drawable.ic_mtrl_database_added;
+            case "onRealtimeDelete" -> R.drawable.ic_mtrl_database_off;
+            case "onSubscribe", "onUnsubscribe" -> R.drawable.ic_mtrl_time;
             case "onDownloadProgress" -> R.drawable.ic_mtrl_downloading;
             case "onUploadSuccess" -> R.drawable.ic_mtrl_uploaded;
             case "onDownloadSuccess" -> R.drawable.ic_mtrl_download;
@@ -148,6 +151,11 @@ public class oq {
             case "onMapReady" -> Helper.getResString(R.string.event_on_map_ready);
             case "onMarkerClicked" -> Helper.getResString(R.string.event_on_marker_clicked);
             case "onLocationChanged" -> Helper.getResString(R.string.event_on_location_changed);
+            case "onRealtimeInsert" -> Helper.getResString(R.string.event_onrealtimeinsert);
+            case "onRealtimeUpdate" -> Helper.getResString(R.string.event_onrealtimeupdate);
+            case "onRealtimeDelete" -> Helper.getResString(R.string.event_onrealtimedelete);
+            case "onSubscribe" -> Helper.getResString(R.string.event_onsubscribe);
+            case "onUnsubscribe" -> Helper.getResString(R.string.event_onunsubscribe);
             case "onSelectComplete" -> Helper.getResString(R.string.event_onselectcomplete);
             case "onInsertComplete" -> Helper.getResString(R.string.event_oninsertcomplete);
             case "onUpdateComplete" -> Helper.getResString(R.string.event_onupdatecomplete);
@@ -473,6 +481,14 @@ public class oq {
                 eventList.add("onUploadSuccess");
                 eventList.add("onDownloadSuccess");
                 eventList.add("onFailure");
+            }
+            case "supabaseRealtimeListener" -> {
+                eventList.add("onSubscribe");
+                eventList.add("onUnsubscribe");
+                eventList.add("onRealtimeInsert");
+                eventList.add("onRealtimeUpdate");
+                eventList.add("onRealtimeDelete");
+                eventList.add("onError");
             }
         }
 

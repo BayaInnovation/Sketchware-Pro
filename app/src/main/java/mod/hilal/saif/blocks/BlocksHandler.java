@@ -2020,22 +2020,121 @@ public class BlocksHandler {
         arrayList.add(hashMap);
 
         // Supabase DB Blocks
+        
+        // Select
         hashMap = new HashMap<>();
         hashMap.put("name", "supabaseDbSelect");
         hashMap.put("type", " ");
         hashMap.put("code", "%s.from(%s).select(%s).execute();");
-        hashMap.put("color", "#4CAF50"); // Green/DB color
-        hashMap.put("palette", "10");
+        hashMap.put("color", "#4CAF50"); // Green/DB
+        hashMap.put("palette", "20");
         hashMap.put("spec", "Supabase DB %m.supabaseDb Select Table %s Columns %s");
         arrayList.add(hashMap);
 
+        // Filters
+        String[] filters = {"eq", "neq", "gt", "gte", "lt", "lte", "like", "ilike", "is", "in"};
+        for (String filter : filters) {
+            hashMap = new HashMap<>();
+            hashMap.put("name", "supabaseDbFilter_" + filter);
+            hashMap.put("type", " ");
+            hashMap.put("code", "." + filter + "(%s, %s)");
+            hashMap.put("color", "#4CAF50");
+            hashMap.put("palette", "20");
+            hashMap.put("spec", "Filter " + filter + " Column %s Value %s");
+            arrayList.add(hashMap);
+        }
+
+        // Modifiers
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseDbOrder");
+        hashMap.put("type", " ");
+        hashMap.put("code", ".order(%s, %s)"); // col, ascending
+        hashMap.put("color", "#4CAF50");
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Order Column %s Ascending %b");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseDbLimit");
+        hashMap.put("type", " ");
+        hashMap.put("code", ".limit(%s)");
+        hashMap.put("color", "#4CAF50");
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Limit %d");
+        arrayList.add(hashMap);
+
+         // CRUD
         hashMap = new HashMap<>();
         hashMap.put("name", "supabaseDbInsert");
         hashMap.put("type", " ");
         hashMap.put("code", "%s.from(%s).insert(%s).execute();");
         hashMap.put("color", "#4CAF50");
-        hashMap.put("palette", "10");
+        hashMap.put("palette", "20");
         hashMap.put("spec", "Supabase DB %m.supabaseDb Insert Table %s Data %m.map");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseDbUpdate");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.from(%s).update(%s).match(%s).execute();");
+        hashMap.put("color", "#4CAF50");
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase DB %m.supabaseDb Update Table %s Data %m.map Match %m.map");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseDbDelete");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.from(%s).delete().match(%s).execute();");
+        hashMap.put("color", "#4CAF50");
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase DB %m.supabaseDb Delete Table %s Match %m.map");
+        arrayList.add(hashMap);
+
+        // Supabase Auth Blocks
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseSignIn");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.auth().signInWithEmail(new Email(%s), %s);"); 
+        hashMap.put("color", "#FFCA28"); // Amber/Auth
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase Auth %m.supabaseAuth Sign In Email %s Password %s");
+        arrayList.add(hashMap);
+        
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseSignUp");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.auth().signUpWithEmail(new Email(%s), %s);");
+        hashMap.put("color", "#FFCA28");
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase Auth %m.supabaseAuth Sign Up Email %s Password %s");
+        arrayList.add(hashMap);
+        
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseSignOut");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.auth().signOut();");
+        hashMap.put("color", "#FFCA28");
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase Auth %m.supabaseAuth Sign Out");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseResetPassword");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.auth().resetPasswordForEmail(%s);");
+        hashMap.put("color", "#FFCA28");
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase Auth %m.supabaseAuth Reset Password Email %s");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseGetSession");
+        hashMap.put("type", "s"); // String return (JSON maybe?)
+        hashMap.put("code", "%s.auth().currentSessionOrNull()");
+        hashMap.put("color", "#FFCA28");
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase Auth %m.supabaseAuth Current Session");
         arrayList.add(hashMap);
 
         // Supabase Storage Blocks
@@ -2044,8 +2143,45 @@ public class BlocksHandler {
         hashMap.put("type", " ");
         hashMap.put("code", "%s.storage().from(%s).upload(%s, %s);");
         hashMap.put("color", "#2196F3"); // Blue/Storage
-        hashMap.put("palette", "11");
+        hashMap.put("palette", "20");
         hashMap.put("spec", "Supabase Storage %m.supabaseStorage Upload Bucket %s Path %s File %s");
+        arrayList.add(hashMap);
+        
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseStorageDownload");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.storage().from(%s).download(%s);");
+        hashMap.put("color", "#2196F3");
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase Storage %m.supabaseStorage Download Bucket %s Path %s");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseStorageGetPublicUrl");
+        hashMap.put("type", "s");
+        hashMap.put("code", "%s.storage().from(%s).getPublicUrl(%s)");
+        hashMap.put("color", "#2196F3"); 
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase Storage %m.supabaseStorage Get Public URL Bucket %s Path %s");
+        arrayList.add(hashMap);
+
+        // Supabase Realtime Blocks
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseRealtimeSubscribe");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.from(%s).on(RealtimeChannel.CHANNEL_EVENT_INSERT, (payload) -> { /* handled by event */ }).subscribe();");
+        hashMap.put("color", "#AB47BC"); // Purple/Realtime
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase Realtime %m.supabaseRealtime Subscribe Table %s");
+        arrayList.add(hashMap);
+        
+        hashMap = new HashMap<>();
+        hashMap.put("name", "supabaseRealtimeUnsubscribe");
+        hashMap.put("type", " ");
+        hashMap.put("code", "%s.removeAllChannels();");
+        hashMap.put("color", "#AB47BC"); 
+        hashMap.put("palette", "20");
+        hashMap.put("spec", "Supabase Realtime %m.supabaseRealtime Unsubscribe All");
         arrayList.add(hashMap);
         hashMap.put("code", "%s.setError(%s);");
         hashMap.put("color", "#4A6CD4");
