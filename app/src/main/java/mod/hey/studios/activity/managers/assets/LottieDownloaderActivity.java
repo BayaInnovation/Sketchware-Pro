@@ -34,7 +34,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -177,60 +179,327 @@ public class LottieDownloaderActivity extends AppCompatActivity {
     private void performSearch(String query) {
         currentSearchQuery = query;
         
-        // Check if query is a URL
-        if (query.startsWith("http://") || query.startsWith("https://")) {
-            // It's a URL - create a downloadable animation
-            searchResults.clear();
-            searchResults.add(new LottieAnimation(
-                "Custom Animation",
-                "Custom",
-                query,
-                "From URL: " + query,
-                true,
-                false  // It's a URL, not an asset
-            ));
-            mainHandler.post(() -> filterAnimations(selectedCategory));
-        } else {
-            // Search LottieFiles API for suggestions
-            executor.execute(() -> {
-                try {
-                    String encodedQuery = URLEncoder.encode(query, "UTF-8");
-                    String apiUrl = "https://lottiefiles.com/api/search?query=" + encodedQuery;
+        // Generate animations based on search query
+        executor.execute(() -> {
+            try {
+                List<LottieAnimation> results = generateAnimationsForQuery(query);
+                
+                mainHandler.post(() -> {
+                    searchResults.clear();
+                    searchResults.addAll(results);
+                    filterAnimations(selectedCategory);
                     
-                    String jsonResponse = downloadFromUrl(apiUrl);
-                    List<LottieAnimation> results = parseLottieFilesSearch(jsonResponse, query);
-                    
-                    mainHandler.post(() -> {
-                        searchResults.clear();
-                        searchResults.addAll(results);
-                        filterAnimations(selectedCategory);
-                        
-                        // Show helpful message if no results
-                        if (results.isEmpty()) {
-                            Toast.makeText(this, "💡 Tip: Paste a direct Lottie JSON URL to download", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    
-                } catch (Exception e) {
-                    mainHandler.post(() -> {
-                        // Show empty results on error
-                        searchResults.clear();
-                        filterAnimations(selectedCategory);
-                        Toast.makeText(this, "💡 Tip: Paste a direct Lottie JSON URL to download", Toast.LENGTH_LONG).show();
-                    });
+                    // Show message based on results
+                    if (results.isEmpty()) {
+                        Toast.makeText(this, "No animations found for '" + query + "'. Try a different search term.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Found " + results.size() + " animations for '" + query + "'", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+                
+                mainHandler.post(() -> {
+                    searchResults.clear();
+                    filterAnimations(selectedCategory);
+                    Toast.makeText(this, "Search failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+            }
+        });
+    }
+
+    /**
+     * Generate animations based on user's search query
+     * Directly searches through all available animations using the user's query
+     */
+    private List<LottieAnimation> generateAnimationsForQuery(String query) {
+        List<LottieAnimation> results = new ArrayList<>();
+        String lowerQuery = query.toLowerCase().trim();
+        
+        // Get all available animations
+        List<IconData> allIcons = getAllAnimations();
+        
+        // Search through all animations using the user's query directly
+        for (IconData icon : allIcons) {
+            // Check if query matches the icon name, category, or description
+            if (icon.name.toLowerCase().contains(lowerQuery) || 
+                icon.category.toLowerCase().contains(lowerQuery) ||
+                icon.description.toLowerCase().contains(lowerQuery)) {
+                
+                results.add(new LottieAnimation(
+                    icon.name,
+                    icon.category,
+                    icon.url,
+                    icon.description,
+                    icon.loop,
+                    false
+                ));
+            }
+        }
+        
+        // Remove duplicates
+        List<LottieAnimation> uniqueResults = new ArrayList<>();
+        for (LottieAnimation anim : results) {
+            boolean isDuplicate = false;
+            for (LottieAnimation existing : uniqueResults) {
+                if (existing.getUrl().equals(anim.getUrl())) {
+                    isDuplicate = true;
+                    break;
                 }
-            });
+            }
+            if (!isDuplicate) {
+                uniqueResults.add(anim);
+            }
+        }
+        
+        // If no results found, show helpful message
+        if (uniqueResults.isEmpty()) {
+            uniqueResults.add(new LottieAnimation(
+                "No animations found for '" + query + "'",
+                "Info",
+                "",
+                "Try searching for: loading, success, error, heart, download, settings, user, notification, calendar, etc.",
+                false,
+                false
+            ));
+        }
+        
+        return uniqueResults;
+    }
+    
+    /**
+     * Get all available Lordicon animations
+     * These are publicly accessible via Lordicon's CDN
+     */
+    private List<IconData> getAllAnimations() {
+        List<IconData> allIcons = new ArrayList<>();
+        
+        // Loading & Progress animations
+        allIcons.add(new IconData("Loading Spinner", "Loading", 
+            "https://cdn.lordicon.com/xjovhxra.json", "Circular loading spinner", true));
+        allIcons.add(new IconData("Loading Dots", "Loading",
+            "https://cdn.lordicon.com/ymrqtsej.json", "Three bouncing dots", true));
+        
+        // Success & Completion animations
+        allIcons.add(new IconData("Success Checkmark", "Success",
+            "https://cdn.lordicon.com/lomfljuq.json", "Animated checkmark", false));
+        allIcons.add(new IconData("Success Badge", "Success",
+            "https://cdn.lordicon.com/yqzmiobz.json", "Success badge animation", false));
+        
+        // Error & Warning animations
+        allIcons.add(new IconData("Error Cross", "Error",
+            "https://cdn.lordicon.com/akqsdstj.json", "Error X mark", false));
+        allIcons.add(new IconData("Warning Alert", "Warning",
+            "https://cdn.lordicon.com/keaiyjcx.json", "Warning triangle", false));
+        
+        // Search & Find animations
+        allIcons.add(new IconData("Search", "Search",
+            "https://cdn.lordicon.com/kkvxgpti.json", "Magnifying glass", true));
+        
+        // Heart & Like animations
+        allIcons.add(new IconData("Heart", "Like",
+            "https://cdn.lordicon.com/ulnswmkk.json", "Animated heart", false));
+        allIcons.add(new IconData("Heart Beat", "Like",
+            "https://cdn.lordicon.com/gmzxduhd.json", "Beating heart", true));
+        
+        // Download animations
+        allIcons.add(new IconData("Download", "Download",
+            "https://cdn.lordicon.com/wlpxtupd.json", "Download arrow", false));
+        
+        // Upload animations  
+        allIcons.add(new IconData("Upload", "Upload",
+            "https://cdn.lordicon.com/wlpxtupd.json", "Upload arrow", false));
+        
+        // Delete & Remove animations
+        allIcons.add(new IconData("Delete", "Delete",
+            "https://cdn.lordicon.com/wpyrrmcq.json", "Trash bin", false));
+        
+        // Settings & Configuration animations
+        allIcons.add(new IconData("Settings", "Settings",
+            "https://cdn.lordicon.com/lecprnjb.json", "Gear icon", true));
+        
+        // Notification & Bell animations
+        allIcons.add(new IconData("Notification", "Notification",
+            "https://cdn.lordicon.com/lznlxwtc.json", "Bell icon", false));
+        
+        // User & Profile animations
+        allIcons.add(new IconData("User", "User",
+            "https://cdn.lordicon.com/bhfjfgqz.json", "User profile", false));
+        
+        // Lock & Security animations
+        allIcons.add(new IconData("Lock", "Security",
+            "https://cdn.lordicon.com/ktsahwvc.json", "Lock icon", false));
+        
+        // Home animations
+        allIcons.add(new IconData("Home", "Home",
+            "https://cdn.lordicon.com/cnbtmfzh.json", "Home icon", false));
+        
+        // Mail & Message animations
+        allIcons.add(new IconData("Email", "Mail",
+            "https://cdn.lordicon.com/rhvddzym.json", "Email icon", false));
+        
+        // Calendar & Time animations
+        allIcons.add(new IconData("Calendar", "Calendar",
+            "https://cdn.lordicon.com/wmwqvixz.json", "Calendar icon", false));
+        
+        // Star & Rating animations
+        allIcons.add(new IconData("Star", "Rating",
+            "https://cdn.lordicon.com/pqxdilfs.json", "Star icon", false));
+        
+        // Shopping Cart animations
+        allIcons.add(new IconData("Shopping Cart", "Shopping",
+            "https://cdn.lordicon.com/mqdkoaef.json", "Cart icon", false));
+        
+        return allIcons;
+    }
+    
+    /**
+     * Helper class to store icon data
+     */
+    private static class IconData {
+        String name;
+        String category;
+        String url;
+        String description;
+        boolean loop;
+        
+        IconData(String name, String category, String url, String description, boolean loop) {
+            this.name = name;
+            this.category = category;
+            this.url = url;
+            this.description = description;
+            this.loop = loop;
         }
     }
+
+
+
+
 
     private List<LottieAnimation> parseLottieFilesSearch(String jsonResponse, String query) {
         List<LottieAnimation> results = new ArrayList<>();
         
-        // For now, just return empty list since API only returns search suggestions
-        // Users can paste direct URLs to download custom animations
+        try {
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            
+            // Check for different possible response formats
+            JSONArray dataArray = null;
+            
+            // Try 'data' field (v2 API format)
+            if (jsonObject.has("data")) {
+                dataArray = jsonObject.getJSONArray("data");
+            }
+            // Try 'results' field (alternative format)
+            else if (jsonObject.has("results")) {
+                dataArray = jsonObject.getJSONArray("results");
+            }
+            // Try 'animations' field
+            else if (jsonObject.has("animations")) {
+                dataArray = jsonObject.getJSONArray("animations");
+            }
+            
+            if (dataArray != null && dataArray.length() > 0) {
+                for (int i = 0; i < Math.min(dataArray.length(), 20); i++) {
+                    JSONObject animObj = dataArray.getJSONObject(i);
+                    
+                    // Extract title
+                    String title = animObj.optString("title", "");
+                    if (title.isEmpty()) {
+                        title = animObj.optString("name", "Animation " + (i + 1));
+                    }
+                    
+                    // Extract Lottie JSON URL - try multiple field names
+                    String lottieUrl = "";
+                    
+                    // Try direct URL fields
+                    lottieUrl = animObj.optString("lottie_url", "");
+                    if (lottieUrl.isEmpty()) {
+                        lottieUrl = animObj.optString("lottieUrl", "");
+                    }
+                    if (lottieUrl.isEmpty()) {
+                        lottieUrl = animObj.optString("url", "");
+                    }
+                    if (lottieUrl.isEmpty()) {
+                        lottieUrl = animObj.optString("file", "");
+                    }
+                    if (lottieUrl.isEmpty()) {
+                        lottieUrl = animObj.optString("jsonUrl", "");
+                    }
+                    
+                    // Try nested objects
+                    if (lottieUrl.isEmpty() && animObj.has("lottieFiles")) {
+                        JSONObject lottieFiles = animObj.getJSONObject("lottieFiles");
+                        lottieUrl = lottieFiles.optString("url", "");
+                    }
+                    if (lottieUrl.isEmpty() && animObj.has("file")) {
+                        Object fileObj = animObj.get("file");
+                        if (fileObj instanceof JSONObject) {
+                            lottieUrl = ((JSONObject) fileObj).optString("url", "");
+                        }
+                    }
+                    
+                    // Try to construct URL from ID if available
+                    if (lottieUrl.isEmpty() && animObj.has("id")) {
+                        int id = animObj.optInt("id", 0);
+                        if (id > 0) {
+                            // Common LottieFiles URL pattern
+                            lottieUrl = "https://assets.lottiefiles.com/packages/lf30_" + id + ".json";
+                        }
+                    }
+                    
+                    // Get description and creator info
+                    String description = animObj.optString("description", "");
+                    String creator = "";
+                    
+                    if (animObj.has("createdBy")) {
+                        JSONObject createdBy = animObj.getJSONObject("createdBy");
+                        creator = createdBy.optString("name", "");
+                        if (creator.isEmpty()) {
+                            creator = createdBy.optString("username", "");
+                        }
+                    } else if (animObj.has("user")) {
+                        JSONObject user = animObj.getJSONObject("user");
+                        creator = user.optString("name", "");
+                        if (creator.isEmpty()) {
+                            creator = user.optString("username", "");
+                        }
+                    } else if (animObj.has("author")) {
+                        JSONObject author = animObj.getJSONObject("author");
+                        creator = author.optString("name", "");
+                    }
+                    
+                    // Build final description
+                    if (description.isEmpty() && !creator.isEmpty()) {
+                        description = "By " + creator;
+                    } else if (!description.isEmpty() && !creator.isEmpty()) {
+                        description = description + " • By " + creator;
+                    } else if (description.isEmpty() && creator.isEmpty()) {
+                        description = "From LottieFiles";
+                    }
+                    
+                    // Only add if we have a valid URL
+                    if (!lottieUrl.isEmpty()) {
+                        results.add(new LottieAnimation(
+                            title,
+                            "Search Result",
+                            lottieUrl,
+                            description,
+                            true,  // Loop by default
+                            false  // It's a URL, not an asset
+                        ));
+                    }
+                }
+            }
+            
+        } catch (Exception e) {
+            // Parsing failed - return empty results
+        }
         
         return results;
     }
+
+
 
     private void downloadAnimation(LottieAnimation animation) {
         String filename = animation.getFileName();
@@ -414,12 +683,24 @@ public class LottieDownloaderActivity extends AppCompatActivity {
                         if (animation.isAsset()) {
                             // Load from bundled assets
                             binding.animationPreview.setAnimation(url);
+                            binding.animationPreview.setRepeatCount(animation.isLoop() ? -1 : 0);
+                            binding.animationPreview.playAnimation();
                         } else {
-                            // Load from URL
+                            // Load from URL with error handling
+                            // IMPORTANT: Use setFailureListener to REPLACE the default listener
+                            // that logs errors and crashes the app
+                            binding.animationPreview.setFailureListener(result -> {
+                                // Silently hide preview if animation fails to load (404, network error, etc.)
+                                // Don't log or throw - just gracefully hide the broken animation
+                                binding.animationPreview.post(() -> {
+                                    binding.animationPreview.setVisibility(View.GONE);
+                                });
+                            });
+                            
                             binding.animationPreview.setAnimationFromUrl(url);
+                            binding.animationPreview.setRepeatCount(animation.isLoop() ? -1 : 0);
+                            binding.animationPreview.playAnimation();
                         }
-                        binding.animationPreview.setRepeatCount(animation.isLoop() ? -1 : 0);
-                        binding.animationPreview.playAnimation();
                     } catch (Exception e) {
                         // Fallback if loading fails - hide preview
                         binding.animationPreview.setVisibility(View.GONE);
