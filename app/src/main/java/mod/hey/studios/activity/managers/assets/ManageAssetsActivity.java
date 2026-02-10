@@ -84,6 +84,10 @@ public class ManageAssetsActivity extends BaseAppCompatActivity {
             showImportDialog();
             hideShowOptionsButton(true);
         });
+        binding.downloadLottieButton.setOnClickListener(v -> {
+            launchLottieDownloader();
+            hideShowOptionsButton(true);
+        });
 
     }
 
@@ -182,6 +186,21 @@ public class ManageAssetsActivity extends BaseAppCompatActivity {
         };
 
         new FilePickerDialogFragment(options, callback).show(getSupportFragmentManager(), "filePicker");
+    }
+
+    private void launchLottieDownloader() {
+        Intent intent = new Intent(this, LottieDownloaderActivity.class);
+        intent.putExtra("sc_id", sc_id);
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            // Refresh assets list after successful download
+            refresh();
+        }
     }
 
     private void showRenameDialog(int position) {
@@ -289,6 +308,10 @@ public class ManageAssetsActivity extends BaseAppCompatActivity {
                 try {
                     if (FileUtil.isImageFile(item)) {
                         Glide.with(holder.binding.icon.getContext()).load(new File(item)).into(holder.binding.icon);
+                    } else if (isLottieFile(item)) {
+                        // Show Lottie animation icon for Lottie JSON files
+                        holder.binding.icon.setImageResource(R.drawable.ic_mtrl_file);
+                        // TODO: Add custom Lottie icon drawable
                     } else {
                         holder.binding.icon.setImageResource(R.drawable.ic_mtrl_file);
                     }
@@ -357,6 +380,26 @@ public class ManageAssetsActivity extends BaseAppCompatActivity {
                 viewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 startActivity(viewIntent);
+            }
+        }
+
+        public boolean isLottieFile(String filePath) {
+            if (!filePath.endsWith(".json")) {
+                return false;
+            }
+            
+            try {
+                String content = FileUtil.readFile(filePath);
+                if (content == null || content.isEmpty()) {
+                    return false;
+                }
+                
+                // Basic Lottie JSON validation - check for required fields
+                org.json.JSONObject json = new org.json.JSONObject(content);
+                return json.has("v") && json.has("fr") && json.has("ip") && 
+                       json.has("op") && json.has("w") && json.has("h");
+            } catch (Exception e) {
+                return false;
             }
         }
 

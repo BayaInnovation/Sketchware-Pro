@@ -120,6 +120,16 @@
             android:layout_marginBottom="20dp"
             android:text="@string/assets_manager_add_file" />
 
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/downloadLottieButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/assets_download_lottie"
+            app:icon="@android:drawable/stat_sys_download"
+            app:iconTint="@color/lottie_palette_color" />
+
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-

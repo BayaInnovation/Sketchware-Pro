@@ -448,6 +448,16 @@ public class ManageLibraryActivity extends BaseAppCompatActivity implements View
         addLibraryItem(supabaseLibraryBean, basicCategory, false);
 
         LibraryCategoryView advancedCategory = addCategoryItem("Advanced");
+        
+        // External Libraries (Local Library)
+        ProjectLibraryBean localLibraryBean = new ProjectLibraryBean(ProjectLibraryBean.PROJECT_LIB_TYPE_LOCAL_LIB);
+        addLibraryItem(localLibraryBean, advancedCategory);
+        
+        // Native Libraries
+        ProjectLibraryBean nativeLibraryBean = new ProjectLibraryBean(ProjectLibraryBean.PROJECT_LIB_TYPE_NATIVE_LIB);
+        addLibraryItem(nativeLibraryBean, advancedCategory);
+        
+        // Exclude Built-in Libraries
         addCustomLibraryItem(ProjectLibraryBean.PROJECT_LIB_TYPE_EXCLUDE_BUILTIN_LIBRARIES, advancedCategory, false);
     }
 

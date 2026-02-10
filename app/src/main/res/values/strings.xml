@@ -2325,4 +2325,38 @@ Please try again later"</string>
 
     <string name="common_word_disable">Disable</string>
     <string name="common_word_enable">Enable</string>
+
+    <!-- Lottie Animation Strings -->
+    <string name="lottie_downloader_title">Download Lottie Animation</string>
+    <string name="lottie_url_label">Animation URL</string>
+    <string name="lottie_url_hint">https://lottiefiles.com/... or direct JSON URL</string>
+    <string name="lottie_file_name_label">File Name</string>
+    <string name="lottie_file_name_hint">animation.json</string>
+    <string name="lottie_download_button">Download</string>
+    <string name="lottie_preview_label">Preview</string>
+    <string name="lottie_save_button">Save to Assets</string>
+    <string name="lottie_cancel_button">Cancel</string>
+    <string name="lottie_downloading">Downloading animation…</string>
+    <string name="lottie_validating">Validating JSON…</string>
+    <string name="lottie_invalid_url">Invalid URL. Please enter a valid Lottie animation URL.</string>
+    <string name="lottie_invalid_json">Invalid Lottie JSON format. Please check the file.</string>
+    <string name="lottie_download_success">Animation downloaded successfully!</string>
+    <string name="lottie_download_error">Failed to download animation. Please try again.</string>
+    <string name="lottie_save_success">Animation saved to assets!</string>
+    <string name="lottie_save_error">Failed to save animation.</string>
+    <string name="lottie_file_exists">File already exists. Choose a different name.</string>
+    <string name="lottie_preview_title">Animation Preview</string>
+    <string name="lottie_empty_url">Please enter a URL</string>
+    <string name="lottie_empty_filename">Please enter a file name</string>
+    <string name="lottie_network_error">Network error. Check your connection.</string>
+    <string name="lottie_file_too_large">File is too large (max 5MB)</string>
+    <string name="lottie_component_title">Lottie Animation</string>
+    <string name="lottie_component_description">Display and control Lottie animations</string>
+    <string name="lottie_palette_category">Lottie Animation</string>
+    <string name="assets_download_lottie">Download Lottie</string>
+    <string name="lottie_category_filter">Filter by Category</string>
+    <string name="lottie_store_title">Lottie Animation Store</string>
+    <string name="lottie_search_hint">Search or paste Lottie JSON URL</string>
+    <string name="lottie_searching">Searching animations...</string>
+    <string name="lottie_no_results">No animations found</string>
 </resources>

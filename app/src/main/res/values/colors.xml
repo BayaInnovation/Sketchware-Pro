@@ -89,4 +89,7 @@
     <color name="splash_bg_color">@color/md_theme_light_background</color>
     <color name="splash_content_color">@color/md_theme_light_on_background</color>
 
+    <!-- Lottie Animation -->
+    <color name="lottie_palette_color">#FFFF6B35</color>
+
 </resources>

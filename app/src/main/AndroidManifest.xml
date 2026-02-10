@@ -232,6 +232,10 @@
             android:name="mod.hey.studios.activity.managers.assets.ManageAssetsActivity"
             android:configChanges="orientation|screenSize" />
         <activity
+            android:name="mod.hey.studios.activity.managers.assets.LottieDownloaderActivity"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name="mod.hey.studios.activity.managers.java.ManageJavaActivity"
             android:configChanges="orientation|screenSize" />
         <activity
